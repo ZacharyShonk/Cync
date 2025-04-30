@@ -9,3 +9,15 @@
 - One-way sync
 - Smart updates (only copies changed files)
 - Partial file updates (only changed byte ranges are written)
+
+## 🛠️ Planned Features (TODO)
+
+- Customizable filters (include/exclude files and folders)
+- Dry-run mode to preview changes
+- Optional checksum-based verification
+- Multithreaded copying
+- Python API for programmatic use
+- Two-way sync
+- File history
+- Remote sync over network/SSH
+- 7-Zip compression for transfer optimization
