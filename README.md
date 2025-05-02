@@ -9,10 +9,10 @@
 - One-way sync
 - Smart updates (only copies changed files)
 - Partial file updates (only changed byte ranges are written)
+- Customizable filters (include/exclude files and folders)
 
 ## 🛠️ Planned Features (TODO)
 
-- Customizable filters (include/exclude files and folders)
 - Dry-run mode to preview changes
 - Optional checksum-based verification
 - Multithreaded copying
