@@ -1,0 +1,87 @@
+name: Build and Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: python -m pip install --upgrade pip pyinstaller
+
+    - name: Build executable
+      run: |
+        pyinstaller --onefile cync.py
+      shell: bash
+
+    - name: Rename executable and prepare artifact path
+      id: rename-executable
+      run: |
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          mv dist/cync.exe cync-windows.exe
+          echo "artifact_path=cync-windows.exe" >> $GITHUB_OUTPUT
+        else
+          mv dist/cync cync-linux
+          echo "artifact_path=cync-linux" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
+    - name: Upload artifact for release
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.os }}-binary
+        path: ${{ steps.rename-executable.outputs.artifact_path }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download Linux build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-binary
+          path: ./artifacts/linux
+
+      - name: Download Windows build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-latest-binary
+          path: ./artifacts/windows
+
+      - name: Prepare release assets
+        run: |
+          cp ./artifacts/linux/cync-linux ./cync-linux
+          cp ./artifacts/windows/cync-windows.exe ./cync-windows.exe
+          #cp cync.py ./cync.py
+
+      - name: Create GitHub Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            - Automated release for tag ${{ github.ref_name }}.
+            - Includes Linux and Windows standalone executables and the original Python script.
+            - Original Python source (cync.py)
+          files: |
+            ./cync-linux
+            ./cync-windows.exe
+            ./cync.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
