@@ -59,6 +59,7 @@ python3 main.py /path/to/source /path/to/destination
 
 ## 🔮 Planned Features (In order of priority)
 
+- [ ] Add filters (includes/excludes)
 - [ ] Dry-run mode to preview changes
 - [ ] Progress bar with estimated time remaining
 - [ ] Multithreaded syncing
