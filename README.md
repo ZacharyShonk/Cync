@@ -25,7 +25,7 @@ Cync is a standalone Python 3.11+ script. Clone and run it directly:
 ```bash
 git clone https://github.com/ZacharyShonk/Cync.git
 cd Cync
-python3 main.py /path/to/source /path/to/destination
+python3 cync.py /path/to/source /path/to/destination
 ```
 
 ---
@@ -33,7 +33,7 @@ python3 main.py /path/to/source /path/to/destination
 ## 🛠️ Usage
 
 ```bash
-python3 main.py /path/to/source /path/to/destination
+python3 cync.py /path/to/source /path/to/destination
 ```
 
 - `/path/to/source`: The directory you want to sync from.
@@ -49,11 +49,11 @@ python3 main.py /path/to/source /path/to/destination
 
 ## 📊 Project Status
 
-![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![Maintenance](https://img.shields.io/maintenance/yes/2025)
-![Last Commit](https://img.shields.io/github/last-commit/ZacharyShonk/Cync)
-![Issues](https://img.shields.io/github/issues/ZacharyShonk/Cync)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/license/gpl-3-0)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
+[![Maintenance](https://img.shields.io/maintenance/yes/2025)](https://github.com/ZacharyShonk/Cync/projects)
+[![Last Commit](https://img.shields.io/github/last-commit/ZacharyShonk/Cync)](https://github.com/ZacharyShonk/Cync/commits/main/)
+[![Issues](https://img.shields.io/github/issues/ZacharyShonk/Cync)](https://github.com/ZacharyShonk/Cync/issues)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://github.com/ZacharyShonk/Cync/blob/main/LICENSE)
 
 ---
 
