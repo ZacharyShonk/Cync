@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cync"
+version = "1.0.0"
+authors = [
+  { name="Zachary Shonk", email="zacharyshonk@gmail.com" },
+]
+description = "Local file synchronization tool"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0+"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/ZacharyShonk/Cync"
+Issues = "https://github.com/ZacharyShonk/Cync/issues"
