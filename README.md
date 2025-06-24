@@ -1,5 +1,7 @@
 # Cync
 
+> A blazing-fast, I/O-efficient Python tool for local file synchronization.
+
 **Cync** is a fast and efficient local file synchronization tool.  
 It detects and syncs changes with minimal disk I/O, making updates faster and more resource-friendly.
 
@@ -20,12 +22,18 @@ It detects and syncs changes with minimal disk I/O, making updates faster and mo
 
 ## 📦 Installation
 
-Cync is a standalone Python 3.11+ script. Clone and run it directly:
+You can install **Cync** via [PyPI](https://pypi.org/project/cync/) using pip:
+
+```bash
+pip install cync
+```
+
+Alternatively, clone the repository and run it directly:
 
 ```bash
 git clone https://github.com/ZacharyShonk/Cync.git
 cd Cync
-python3 cync.py /path/to/source /path/to/destination
+python3 main.py /path/to/source /path/to/destination
 ```
 
 ---
@@ -33,7 +41,13 @@ python3 cync.py /path/to/source /path/to/destination
 ## 🛠️ Usage
 
 ```bash
-python3 cync.py /path/to/source /path/to/destination
+python3 -m cync /path/to/source /path/to/destination
+```
+
+or if running from the cloned repo:
+
+```bash
+python3 main.py /path/to/source /path/to/destination
 ```
 
 - `/path/to/source`: The directory you want to sync from.
