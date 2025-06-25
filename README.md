@@ -18,6 +18,9 @@ It detects and syncs changes with minimal disk I/O, making updates faster and mo
 - **Partial file copying**  
   Only modified byte ranges are transferred, not entire files.
 
+- **Include/Exclude filters**  
+  rsync-style filtering with `--include` and `--exclude` options.
+
 ---
 
 ## 📦 Installation
@@ -53,6 +56,11 @@ python3 main.py /path/to/source /path/to/destination
 - `/path/to/source`: The directory you want to sync from.
 - `/path/to/destination`: The target directory to sync to.
 
+Optional arguments:
+
+- `--include PATTERN`: Include files or directories matching this pattern (can be repeated).
+- `--exclude PATTERN`: Exclude files or directories matching this pattern (can be repeated).
+
 ---
 
 ## 👤 Author
@@ -67,13 +75,15 @@ python3 main.py /path/to/source /path/to/destination
 [![Maintenance](https://img.shields.io/maintenance/yes/2025)](https://github.com/ZacharyShonk/Cync/projects)
 [![Last Commit](https://img.shields.io/github/last-commit/ZacharyShonk/Cync)](https://github.com/ZacharyShonk/Cync/commits/main/)
 [![Issues](https://img.shields.io/github/issues/ZacharyShonk/Cync)](https://github.com/ZacharyShonk/Cync/issues)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/cync)](https://pypistats.org/packages/cync)
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/ZacharyShonk/Cync/total)](https://github.com/ZacharyShonk/Cync/releases)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://github.com/ZacharyShonk/Cync/blob/main/LICENSE)
 
 ---
 
 ## 🔮 Planned Features (In order of priority)
 
-- [ ] Add filters (includes/excludes)
+- [x] Add filters (includes/excludes)
 - [ ] Dry-run mode to preview changes
 - [ ] Progress bar with estimated time remaining
 - [ ] Multithreaded syncing

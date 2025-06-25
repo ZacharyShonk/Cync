@@ -5,6 +5,7 @@ import time
 import stat
 import argparse
 import logging
+import fnmatch
 
 copied_inodes = {}
 
@@ -113,22 +114,56 @@ def should_copy_file(src_file, dst_file, newer_only=False):
     except FileNotFoundError:
         return True
 
-def sync_folders(src, dst, newer_only, block_size, follow_symlinks):
+def sync_folders(src, dst, newer_only, block_size, follow_symlinks, includes=None, excludes=None):
+    """
+    Synchronize two folders with rsync-style include/exclude:
+      - Everything is copied by default.
+      - Exclude patterns drop files/dirs.
+      - Include patterns override excludes for matching paths.
+    """
     src = os.path.abspath(src)
     dst = os.path.abspath(dst)
+
+    def dir_allowed(rel):
+        rel = os.path.normpath(rel)
+        if rel in ('.', ''):
+            return True
+        for pat in (excludes or []):
+            if pat.endswith('/**'):
+                base = pat[:-3].rstrip('/')
+                if rel == base or rel.startswith(base + '/'):
+                    return False
+            if pat.rstrip('/') == rel:
+                return False
+            if fnmatch.fnmatch(rel + '/', pat.rstrip('/') + '/'):
+                return False
+        return True
+
+    def file_allowed(rel):
+        rel = os.path.normpath(rel)
+        # include overrides exclude
+        if includes and any(fnmatch.fnmatch(rel, pat.rstrip('/')) for pat in includes):
+            return True
+        # then exclude
+        if excludes and any(fnmatch.fnmatch(rel, pat.rstrip('/')) for pat in excludes):
+            return False
+        # otherwise, allow
+        return True
 
     if not os.path.exists(dst):
         os.makedirs(dst)
 
     for root, dirs, files in os.walk(src, topdown=True, followlinks=follow_symlinks):
-        rel_path = os.path.relpath(root, src)
-        dst_root = os.path.join(dst, rel_path)
+        rel_root = os.path.relpath(root, src)
 
+        # skip excluded directories
+        dirs[:] = [d for d in dirs if dir_allowed(os.path.join(rel_root, d))]
+
+        dst_root = os.path.join(dst, rel_root)
         try:
             if os.path.islink(root) and not follow_symlinks:
                 copy_symlink(root, dst_root)
                 continue
-
             if not os.path.exists(dst_root):
                 os.makedirs(dst_root)
         except PermissionError:
@@ -136,6 +171,10 @@ def sync_folders(src, dst, newer_only, block_size, follow_symlinks):
             continue
 
         for file in files:
+            rel_file = os.path.join(rel_root, file)
+            if not file_allowed(rel_file):
+                continue
+
             src_file = os.path.join(root, file)
             dst_file = os.path.join(dst_root, file)
 
@@ -184,6 +223,10 @@ def main():
                         help='follow and recurse into symlinked directories and copy file targets instead of links')
     parser.add_argument('--log', action='store_true',
                         help='enable logging of sync actions')
+    parser.add_argument('--include', action='append', default=[],
+                        help='only include paths matching these rsync-style patterns (can be used multiple times)')
+    parser.add_argument('--exclude', action='append', default=[],
+                        help='exclude paths matching these rsync-style patterns (can be used multiple times)')
     parser.add_argument('source', help='path to the source directory')
     parser.add_argument('destination', help='path to the destination directory')
     args = parser.parse_args()
@@ -203,10 +246,15 @@ def main():
 
     print(f"Copying {source_folder} -> {destination_folder}...")
     start_time = time.time()
-    sync_folders(source_folder, destination_folder,
-                 newer_only=args.newer_only,
-                 block_size=args.block_size,
-                 follow_symlinks=args.follow_symlinks)
+    sync_folders(
+        source_folder,
+        destination_folder,
+        newer_only=args.newer_only,
+        block_size=args.block_size,
+        follow_symlinks=args.follow_symlinks,
+        includes=args.include,
+        excludes=args.exclude,
+    )
     end_time = time.time()
     print(f"Folder copied. Took {int(end_time - start_time)} seconds.")
 
