@@ -24,21 +24,19 @@ jobs:
       run: python -m pip install --upgrade pip pyinstaller
 
     - name: Build executable
-      run: |
-        pyinstaller --onefile cync.py
-      shell: bash
+      run: pyinstaller --onefile cync.py
 
     - name: Rename executable and prepare artifact path
       id: rename-executable
+      shell: pwsh
       run: |
-        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          mv dist/cync.exe cync-windows.exe
-          echo "artifact_path=cync-windows.exe" >> $GITHUB_OUTPUT
-        else
-          mv dist/cync cync-linux
-          echo "artifact_path=cync-linux" >> $GITHUB_OUTPUT
-        fi
-      shell: bash
+        if ($env:RUNNER_OS -eq "Windows") {
+          Rename-Item -Path "dist/cync.exe" -NewName "cync-windows.exe"
+          echo "artifact_path=cync-windows.exe" >> $env:GITHUB_OUTPUT
+        } else {
+          Rename-Item -Path "dist/cync" -NewName "cync-linux"
+          echo "artifact_path=cync-linux" >> $env:GITHUB_OUTPUT
+        }
 
     - name: Upload artifact for release
       uses: actions/upload-artifact@v4
